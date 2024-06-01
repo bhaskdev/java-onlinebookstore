@@ -1,30 +1,27 @@
 pipeline {
     agent any
+
+    tools {
+        // Specify Maven tool installation
+        maven 'Maven'
+    }
+    environment{
+        SCANNER_HOME= tool 'sonar'
+    }
+
     stages {
-        stage ('checkout') {
+        stage('git checkout') {
             steps {
-                echo "This is checkout stage"
+                // Checkout the repository
+                checkout scmGit(branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/OpqTech/java-onlinebookstore.git']])
             }
         }
-        stage ('build') {
+        
+        stage('Build') {
             steps {
-                echo "This is build stage"
+                // Build the Maven project
+                sh "mvn clean package"
             }
         }
-        stage ('sonarscan') {
-            steps {
-                echo "This is sonarscan stage"
-            }
-        }               
-        stage ('push') {
-            steps {
-                echo "This is push stage"
-            }
-        }
-        stage ('deploy') {
-            steps {
-                echo "This is deploy stage"
-            }
-        }                    
     }
 }
